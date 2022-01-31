@@ -166,19 +166,19 @@ void BasicEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     
     leftChain.process(leftContext);
     rightChain.process(rightContext);
-}
+};
 
 //==============================================================================
 bool BasicEQAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
-}
+};
 
 juce::AudioProcessorEditor* BasicEQAudioProcessor::createEditor()
 {
     return new BasicEQAudioProcessorEditor (*this);
     //return new juce::GenericAudioProcessorEditor(*this);
-}
+};
 
 //==============================================================================
 void BasicEQAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
@@ -189,7 +189,7 @@ void BasicEQAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     
     juce::MemoryOutputStream mos(destData, true);
     apvts.state.writeToStream(mos);
-}
+};
 
 void BasicEQAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
@@ -201,7 +201,7 @@ void BasicEQAudioProcessor::setStateInformation (const void* data, int sizeInByt
         apvts.replaceState(tree);
         updateFilters();
     };
-}
+};
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& abvts)
 {
@@ -216,14 +216,23 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& abvts)
     settings.highCutSlope = static_cast<Slope>(abvts.getRawParameterValue("HighCut Slope")->load());
 
     return settings;
-}
+};
+
+Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate)
+{
+    return juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
+                                                               chainSettings.peakFreq,
+                                                               chainSettings.peakQuality,
+                                                               juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+};
 
 void BasicEQAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
 {
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
-                                                                            chainSettings.peakFreq,
-                                                                            chainSettings.peakQuality,
-                                                                            juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+//    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+//                                                                            chainSettings.peakFreq,
+//                                                                            chainSettings.peakQuality,
+//                                                                            juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+    auto peakCoefficients = makePeakFilter(chainSettings, getSampleRate());
     
     updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, *peakCoefficients);
