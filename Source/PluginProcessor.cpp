@@ -246,7 +246,7 @@ void BasicEQAudioProcessor::updateHighCutFilters(const ChainSettings chainSettin
                                                                                                           2 * (chainSettings.highCutFreq + 1));
     
     auto& leftHighCut = leftChain.get<ChainPositions::HighCut>();
-    auto& rightHighCut = leftChain.get<ChainPositions::HighCut>();
+    auto& rightHighCut = rightChain.get<ChainPositions::HighCut>();
 
     updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
     updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
