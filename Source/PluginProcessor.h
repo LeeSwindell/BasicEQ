@@ -53,14 +53,14 @@ void update(ChainType& chain, CoefficientType& coefficients)
 template<typename ChainType, typename CoefficientType>
 void updateCutFilter(ChainType& cutFilter,
                      const CoefficientType& cutCoefficients,
-                     const Slope lowCutSlope)
+                     const Slope cutSlope)
 {
     cutFilter.template setBypassed<0>(true);
     cutFilter.template setBypassed<1>(true);
     cutFilter.template setBypassed<2>(true);
     cutFilter.template setBypassed<3>(true);
 
-    switch (lowCutSlope)
+    switch (cutSlope)
     {
         case Slope_48:
         {
@@ -143,61 +143,9 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-//    using Filter = juce::dsp::IIR::Filter<float>;
-//    using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
-//    using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
-//
     MonoChain leftChain, rightChain;
-//
-//    enum ChainPositions
-//    {
-//        LowCut,
-//        Peak,
-//        HighCut
-//    };
     
     void updatePeakFilter (const ChainSettings& chainSettings);
-    
-//    using Coefficients = Filter::CoefficientsPtr;
-//    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
-    
-//    template<int Index, typename ChainType, typename CoefficientType>
-//    void update(ChainType& chain, CoefficientType& coefficients)
-//    {
-//        updateCoefficients(chain.template get<Index>().coefficients, coefficients[Index]);
-//        chain.template setBypassed<Index>(false);
-//    };
-//
-//    template<typename ChainType, typename CoefficientType>
-//    void updateCutFilter(ChainType& cutFilter,
-//                         const CoefficientType& cutCoefficients,
-//                         const Slope lowCutSlope)
-//    {
-//        cutFilter.template setBypassed<0>(true);
-//        cutFilter.template setBypassed<1>(true);
-//        cutFilter.template setBypassed<2>(true);
-//        cutFilter.template setBypassed<3>(true);
-//
-//        switch (lowCutSlope)
-//        {
-//            case Slope_48:
-//            {
-//                update<3>(cutFilter, cutCoefficients);
-//            }
-//            case Slope_36:
-//            {
-//                update<2>(cutFilter, cutCoefficients);
-//            }
-//            case Slope_24:
-//            {
-//                update<1>(cutFilter, cutCoefficients);
-//            }
-//            case Slope_12:
-//            {
-//                update<0>(cutFilter, cutCoefficients);
-//            }
-//        }
-//    };
     
     void updateLowCutFilters(const ChainSettings chainSettings);
     
