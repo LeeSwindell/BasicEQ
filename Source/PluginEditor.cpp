@@ -64,25 +64,6 @@ void LookAndFeel::drawRotarySlider(juce::Graphics & g,
         g.setColour(Colours::white);
         g.drawFittedText(text, r.toNearestInt(), juce::Justification::centred, 1);
     }
-    
-//    auto center = bounds.getCentre();
-//
-//    Path p;
-//
-//    Rectangle<float> r;
-//    r.setLeft(center.getX() - 2);
-//    r.setRight(center.getX() + 2);
-//    r.setTop(bounds.getY());
-//    r.setBottom(center.getY());
-//
-//    p.addRectangle(r);
-//    jassert(rotaryStartAngle < rotaryEndAngle);
-//
-//    auto sliderAngRad = jmap(sliderPosProportional, 0.f, 1.f, rotaryStartAngle, rotaryEndAngle);
-//
-//    p.applyTransform(AffineTransform().rotation(sliderAngRad, center.getX(), center.getY()));
-//
-//    g.fillPath(p);
 };
 
 void RotarySliderWithLabels::paint(juce::Graphics &g)
@@ -109,6 +90,33 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
                                       startAng,
                                       endAng,
                                       *this);
+    
+    auto center = sliderBounds.toFloat().getCentre();
+    auto radius = 0.5f * sliderBounds.getWidth();
+    
+    g.setColour(Colour(0u, 172u, 1u));
+    g.setFont(getTextHeight());
+    
+    auto numChoices = labels.size();
+    for (int i = 0; i < numChoices; ++i)
+    {
+        auto pos = labels[i].pos;
+        jassert(0.f <= pos);
+        jassert(1.f >= pos);
+        
+        auto ang = jmap(pos, 0.f, 1.f, startAng, endAng);
+        
+        auto c = center.getPointOnCircumference(radius + 0.5f * getTextHeight() + 1, ang);
+        
+        Rectangle<float> r;
+        auto str = labels[i].label;
+        r.setSize(g.getCurrentFont().getStringWidth(str), getTextHeight());
+        r.setCentre(c);
+        r.setY(r.getY()+getTextHeight());
+        
+        g.drawFittedText(str, r.toNearestInt(), juce::Justification::centred, 1);
+
+    }
 };
 
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
@@ -301,6 +309,27 @@ highCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", highCutSlope
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
+    
+    peakFreqSlider.labels.add({0.f, "20Hz"});
+    peakFreqSlider.labels.add({1.f, "20kHz"});
+    
+    peakGainSlider.labels.add({0.f, "-24dB"});
+    peakGainSlider.labels.add({1.f, "24dB"});
+    
+    peakQualitySlider.labels.add({0.f, "0.0"});
+    peakQualitySlider.labels.add({1.f, "10.0"});
+    
+    lowCutFreqSlider.labels.add({0.f, "20Hz"});
+    lowCutFreqSlider.labels.add({1.f, "20kHz"});
+    
+    highCutFreqSlider.labels.add({0.f, "20Hz"});
+    highCutFreqSlider.labels.add({1.f, "20kHz"});
+    
+    lowCutSlopeSlider.labels.add({0.f, "12"});
+    lowCutSlopeSlider.labels.add({1.f, "48"});
+    
+    highCutSlopeSlider.labels.add({0.f, "12"});
+    highCutSlopeSlider.labels.add({1.f, "48"});
     
     for (auto* comp : getComps())
     {
