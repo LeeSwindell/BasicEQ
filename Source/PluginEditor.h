@@ -67,6 +67,7 @@ juce::Timer
     void timerCallback() override;
     
     void paint(juce::Graphics& g) override;
+    void resized() override;
     
 private:
     BasicEQAudioProcessor& audioProcessor;
@@ -74,7 +75,9 @@ private:
     
     MonoChain monoChain;
     
-    void updateChain(); 
+    void updateChain();
+    
+    juce::Image background;
 
 };
 

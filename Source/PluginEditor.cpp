@@ -119,6 +119,41 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
     }
 };
 
+void ResponseCurveComponent::resized()
+{
+    using namespace juce;
+    
+    background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), true);
+    
+    Graphics g(background);
+    
+    Array<float> freqs
+    {
+        20, 30, 40, 50, 100,
+        200, 300, 400, 500, 1000,
+        2000, 3000, 4000, 5000, 10000,
+        20000
+    };
+    
+    g.setColour(Colours::white);
+    for (auto f : freqs)
+    {
+        auto normX = mapFromLog10(f, 20.f, 20000.f);
+        g.drawVerticalLine(normX * getWidth(), 0.f, getHeight());
+    };
+    
+    Array<float> gain
+    {
+        -24, -12, 0, 12, 24
+    };
+    
+    for (auto gDB : gain)
+    {
+        auto y = jmap(gDB, -24.f, 24.f, float(getHeight()), 0.f);
+        g.drawHorizontalLine(y, 0.f, getWidth());
+    };
+}
+
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 {
     auto bounds = getLocalBounds();
@@ -225,8 +260,10 @@ void ResponseCurveComponent::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     using namespace juce;
     g.fillAll(Colours::black);
-    
+        
     auto responseArea = getLocalBounds();
+    
+    g.drawImage(background, responseArea.toFloat());
     
     auto w = responseArea.getWidth();
     
