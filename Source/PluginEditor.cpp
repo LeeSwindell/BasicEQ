@@ -76,11 +76,6 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
     auto range = getRange();
     auto sliderBounds = getSliderBounds();
     
-//    g.setColour(Colours::red);
-//    g.drawRect(getLocalBounds());
-//    g.setColour(Colours::yellow);
-//    g.drawRect(sliderBounds);
-    
     getLookAndFeel().drawRotarySlider(g,
                                       sliderBounds.getX(),
                                       sliderBounds.getY(),
@@ -392,7 +387,16 @@ void ResponseCurveComponent::resized()
         r.setCentre(r.getCentreX(), y);
         
         g.setColour(gDB == 0 ? Colour(0u, 172u, 1u) : Colours::lightgrey);
+        g.drawFittedText(str, r, juce::Justification::centred, 1);
         
+        str.clear();
+        str << (gDB - 24.f);
+        textWidth = g.getCurrentFont().getStringWidth(str);
+        
+        r.setSize(textWidth, fontHeight);
+        r.setX(1);
+        
+        g.setColour(Colours::lightgrey);
         g.drawFittedText(str, r, juce::Justification::centred, 1);
     }
     
