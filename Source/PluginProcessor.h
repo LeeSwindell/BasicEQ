@@ -285,12 +285,12 @@ private:
     MonoChain leftChain, rightChain;
     
     void updatePeakFilter (const ChainSettings& chainSettings);
-    
     void updateLowCutFilters(const ChainSettings chainSettings);
-    
     void updateHighCutFilters(const ChainSettings chainSettings);
     
     void updateFilters();
+    
+    juce::dsp::Oscillator<float> osc;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BasicEQAudioProcessor)
